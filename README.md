@@ -1,133 +1,104 @@
-# 🧠 Online Judge System – High Level Design
+# Codehub
 
-## 📌 System Overview
+*Empowering Minds, Accelerating Innovation Through Coding Excellence*
 
-A scalable **Online Judge System** for code submission and evaluation, featuring:
-
-- User registration & authentication  
-- Code execution & verdict handling  
-- Problem management (CRUD)  
-- Optional live contests & leaderboard ranking  
+![GitHub last commit](https://img.shields.io/github/last-commit/piyu5h25/Project-Summer) ![GitHub top language](https://img.shields.io/github/languages/top/piyu5h25/Project-Summer) ![GitHub language count](https://img.shields.io/github/languages/count/piyu5h25/Project-Summer)
 
 ---
 
-## ✨ Features
+## Built with the tools and technologies:
 
-### 👤 User Registration & Authentication
-
-- Signup with: `name`, `email`, `password`  
-- **JWT-based authentication**  
-- Passwords encrypted using **bcrypt**  
-
-### 🧾 Profile Management
-
-- View user profile:
-  - Solved problems  
-  - Total submissions  
-  - Contests participated  
-
-### 💻 Code Submission & Evaluation
-
-- Submit solution via inbuilt editor/compiler  
-- Matches solution with test case outputs  
-- Verdict: **Accepted** / **Rejected**  
+![Express](https://img.shields.io/badge/-Express-black?logo=express) 
+![JSON](https://img.shields.io/badge/-JSON-black?logo=json) 
+![Markdown](https://img.shields.io/badge/-Markdown-black?logo=markdown) 
+![npm](https://img.shields.io/badge/-npm-red?logo=npm) 
+![Mongoose](https://img.shields.io/badge/-Mongoose-cc0000?logo=mongoose) 
+![DotEnv](https://img.shields.io/badge/-.ENV-yellowgreen)
+![JavaScript](https://img.shields.io/badge/-JavaScript-yellow?logo=javascript) 
+![Nodemon](https://img.shields.io/badge/-Nodemon-green?logo=nodemon)
+![MongoDB](https://img.shields.io/badge/-MongoDB-green?logo=mongodb)
+![React](https://img.shields.io/badge/-React-00c8ff?logo=react)
+![Axios](https://img.shields.io/badge/-Axios-purple)
 
 ---
 
-## 📚 Problem Management
+## Table of Contents
 
-- **Problem Storage**: Problem statements & test cases  
-- **Difficulty Levels**:
-  - Beginner (5 pts)  
-  - Easy (10 pts)  
-  - Medium (15 pts)  
-  - Hard (20 pts)  
-- **Topic-wise Categories**  
-
----
-
-## 🏆 Contest Mode (Optional)
-
-- Live contest participation  
-- Compete with other users in real-time  
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Testing](#testing)
 
 ---
 
-## 📊 Ranking System
+## Overview
 
-- Points scored from accepted submissions  
-- Tie-breaker: Earlier submission time gets better rank  
-
----
-
-## ⚠️ Challenges & Mitigations
-
-| Challenge                            | Solution                                                     |
-|-------------------------------------|--------------------------------------------------------------|
-| Malicious Code Execution            | Use **Docker** sandboxing                                    |
-| Concurrent Submissions              | Implement **rate-limiting** and **message queue**            |
-| Verdict Fluctuation (post-malicious code) | Queue-based controlled execution                            |
+CodeHub is an all-in-one platform that empowers developers to build scalable online judge systems with ease. It combines a robust backend API with a React-based frontend, enabling real-time code evaluation, user authentication, and problem management.
 
 ---
 
-## 🖼️ System Screens (Frontend)
+## Why CodeHub?
 
-### 1. Login / Signup Screen
+This project simplifies the creation of competitive programming platforms by providing essential features out-of-the-box:
 
-- View-only access to problems without login  
-- Authenticated via JWT  
-
-### 2. Problem List
-
-- Filter by tags (Beginner, Easy, Medium, Hard) and topic  
-- Select preferred language for code submission  
-- View submission logs (Accepted / Rejected)  
-
-### 3. Individual Problem Page
-
-- View problem details and test cases  
-- Submit solution from this screen  
-- Show result in a table (Accepted / Error)  
-
-### 4. Leaderboard (Optional)
-
-- Top problem solvers based on:
-  - Total points  
-  - Submission time (tie-breaker)  
+- 🎯 🧩 **Problem & Contest Management**: Organize and manage coding challenges efficiently.
+- 🚀 ⚙️ **Real-Time Submission & Evaluation**: Seamlessly submit code and receive instant feedback.
+- 🔒 🔑 **Secure Authentication**: Protect user data with JWT and MongoDB integration.
+- 🖥️ 🌐 **Intuitive React Interface**: Navigate effortlessly through problem sets, leaderboards, and user dashboards.
+- 📊 📈 **Activity & Leaderboard Tracking**: Foster engagement with real-time activity updates and rankings.
+- 🛠️ 🧩 **Modular Architecture**: Easily extend and customize for your specific needs.
 
 ---
 
-## 🔁 Code Submission Workflow
+## Getting Started
 
-1. Frontend submits code via UI  
-2. Backend flow:
-   - Fetch problem & test cases  
-   - Run submitted code in Docker container  
-   - Match output with expected results  
-   - Return verdict (Accepted / Rejected)  
-   - Save submission data to DB  
+### Prerequisites
 
----
+This project requires the following dependencies:
 
-## 🛠️ Technical Stack
-
-### 🔙 Backend
-
-- **Node.js / Express.js**  
-- **MongoDB**: For storing users, problems, submissions  
-- **Docker**: Containerized code execution  
-- **Message Queue**: Handles submission execution queue  
+- **Programming Language:** JavaScript  
+- **Package Manager:** Npm
 
 ---
 
-## 🗃️ Database Design
+## 📦 Installation
 
-### 🧩 Problem
+Build **Online\_Judge-AlgoRave** from the source and install dependencies:
 
-```json
-{
-  "_id": "string",
-  "name": "string",
-  "topic": ["array", "of", "tags"],
-  "difficulty": "beginner | easy | medium | hard"
-}
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/piyu5h25/Project-Summer
+   ```
+
+2. **Navigate to the project directory**:
+
+   ```bash
+   cd Project-Summer
+   ```
+
+3. **Install the dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+4. **Usage**
+   Run the project with:
+
+   ```bash
+   npm start
+   ```
+
+5. **Testing**
+   Online\_Judge-AlgoRave uses the test framework. Run the test suite with:
+
+   ```bash
+   npm test
+   ```
+
+---
+
+> 🙋‍♂️ *Made with* ❤️ *by [Piyush Trivedi](https://github.com/piyu5h25)*
