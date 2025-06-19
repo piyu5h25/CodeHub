@@ -31,12 +31,16 @@ const AuthProvider = ({children}) => {
     localStorage.setItem("user", JSON.stringify(userData))
   }
 
- 
+  const logout = () => {
+    setUser(null)
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+  }
 
   const value = {
     user, 
     login, 
-    
+    logout,
     loading
   }
 

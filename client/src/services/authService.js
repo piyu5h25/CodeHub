@@ -1,5 +1,5 @@
 // services/authService.js
-const API_BASE_URL = 'http://localhost:8080'
+const API_BASE_URL = 'http://localhost:5000'
 
 export const authService = {
   async login(credentials) {
