@@ -1,14 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import HomeNav from '../components/HomeNav'
+import Navbar from '../components/Navbar'
 
 const Homepage = () => {
   const { user } = useAuth()
 
   return (
     <>
-    <HomeNav />
+    <Navbar />
     <div className="min-h-160 flex items-center justify-center ">
       <div className="text-center text-white">
         <h1 className="text-6xl font-bold mb-6">CodeHub</h1>
