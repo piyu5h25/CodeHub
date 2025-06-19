@@ -1,15 +1,13 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Homepage from './pages/Homepage'
-import AuthProvider from './context/AuthContext'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Background from './pages/Background'
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
+    
         <div className="relative min-h-screen">
           <Background />
           <div className="relative z-10">
@@ -20,8 +18,7 @@ const App = () => {
             </Routes>
           </div>
         </div>
-      </Router>
-    </AuthProvider>
+      
   );
 }
 

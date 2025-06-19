@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Logo from './Logo'
 
 const Navbar = () => {
   const { user, logout } = useAuth()
@@ -18,7 +19,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-blue-600">
-            CodeHub
+            <Logo />
           </Link>
 
           {/* Navigation Links */}
