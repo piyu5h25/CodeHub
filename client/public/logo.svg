@@ -1,8 +1,8 @@
 <svg width="220" height="60" xmlns="http://www.w3.org/2000/svg">
-  <rect width="220" height="60" rx="10" ry="10" fill="#1e1e1e" />
-  <text x="60" y="38" font-family="Fira Code, monospace" font-size="24" fill="#ffffff">Code
-    <tspan fill="#f97316">Hub</tspan>
-  </text>
-  <path d="M30 20 L20 30 L30 40" stroke="#58a6ff" stroke-width="2" fill="none"/>
-  <path d="M50 20 L60 30 L50 40" stroke="#58a6ff" stroke-width="2" fill="none"/>
-</svg>
+    <rect width="220" height="60" rx="10" ry="10" fill="#020618" />
+    <text x="60" y="38" fontFamily="Fira Code, monospace" fontSize="24" fill="#ffffff">Code
+      <tspan fill="#f97316">Hub</tspan>
+    </text>
+    <path d="M30 20 L20 30 L30 40" stroke="#58a6ff" strokeWidth="2" fill="none"/>
+    <path d="M50 20 L60 30 L50 40" stroke="#58a6ff" strokeWidth="2" fill="none"/>
+  </svg>

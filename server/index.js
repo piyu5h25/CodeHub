@@ -6,6 +6,10 @@ import jwt from "jsonwebtoken";
 import cors from "cors";
 import User from "./models/User.js";
 import cookieParser from "cookie-parser";
+import authRoutes from "./routes/authRoutes.js";
+
+import problemRoutes from "./routes/problemRoutes.js";
+
 
 dotenv.config();
 const app = express();
@@ -20,191 +24,13 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/", authRoutes);
+app.use("/problems", problemRoutes);
 app.get("/", (req, res) => {
     res.send("Hello World");
 });
-
-// Fixed: Changed GET to POST for registration
-app.get('/register', async(req, res)=>{
-    res.send("Register page");
-})
-app.post('/register', async (req, res) => {
-    try {
-        console.log("Received body:", req.body);
-
-        // get all data from frontend
-        const { firstName, lastName, email, password } = req.body;
-        
-        // Check if all fields are filled
-        if (!firstName || !lastName || !email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required",
-            });
-        }
-
-        // Check if user already exists
-        const existingUser = await User.findOne({
-            email: email.toLowerCase()
-        });
-
-        if (existingUser) {
-            return res.status(409).json({
-                success: false,
-                message: "User already exists with same email",
-            });
-        }
-
-        // Hash the password
-        const saltRound = 12;
-        const hashedPassword = await bcrypt.hash(password, saltRound);
-
-        // Create user if not exists and save to database
-        const user = await User.create({
-            firstName: firstName,
-            lastName: lastName,
-            email: email.toLowerCase(),
-            password: hashedPassword,
-        });
-
-        // Generate token to secure the transfer of data
-        const token = jwt.sign({
-            id: user._id,
-            email: user.email,
-        }, 
-        process.env.JWT_SECRET, {
-            expiresIn: "24h",
-        });
-
-        const userResponse = {
-            _id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            createdAt: user.createdAt,
-        };
-
-        res.status(201).json({
-            success: true,
-            message: "You have successfully registered",
-            user: userResponse,
-            token,
-        });
-    } catch (error) {
-        console.error("Registration failed", error);
-        
-        if (error.name === "ValidationError") {
-            // Fixed: Use error.errors instead of undefined validationErrors
-            const validationErrors = Object.values(error.errors).map(err => err.message);
-            return res.status(400).json({
-                success: false,
-                message: "Validation failed",
-                errors: validationErrors,
-            });
-        }
-        
-        if (error.code === 11000) {
-            return res.status(400).json({
-                success: false,
-                message: "User already exists with same email",
-            });
-        }
-        
-        if (error.name === "JsonWebTokenError") {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid token",
-            });
-        }
-        
-        if (error.name === "TokenExpiredError") {
-            return res.status(401).json({
-                success: false,
-                message: "Token expired",
-            });
-        }
-        
-        res.status(500).json({
-            success: false,
-            message: "Internal server error",
-            error: error.message,
-        });
-    }
-});
-
-app.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        
-        // Fixed: Changed && to || for proper validation
-        if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: "Enter both email and password",
-            });
-        }
-        
-        const user = await User.findOne({ email: email.toLowerCase() });
-        if (!user) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid email or password",
-            });
-        }
-        
-        const isPasswordCorrect = await bcrypt.compare(password, user.password);
-        if (!isPasswordCorrect) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid password for this email",
-            });
-        }
-        
-        const token = jwt.sign(
-            {
-                id: user._id,
-                email: user.email,
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "24h",
-            }
-        );
-
-        const cookieOptions = {
-            expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-        };
-
-        const userResponse = {
-            _id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            createdAt: user.createdAt,
-        };
-
-        res.status(200)
-            .cookie("token", token, cookieOptions)
-            .json({
-                success: true,
-                message: "User logged in successfully",
-                user: userResponse,
-                token: token,
-            });
-
-    } catch (error) {
-        console.error("Login failed", error);
-        res.status(500).json({
-            success: false,
-            message: "Internal server error",
-        });
-    }
-});
-
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`Access the server at: http://localhost:${PORT}`);
+    console.log(`Access the login page at: http://localhost:${PORT}/login`);
 });
