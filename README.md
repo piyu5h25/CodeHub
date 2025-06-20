@@ -65,7 +65,7 @@ This project requires the following dependencies:
 
 ## 📦 Installation
 
-Build **Online\_Judge-AlgoRave** from the source and install dependencies:
+Build **Online\_Codehub** from the source and install dependencies:
 
 1. **Clone the repository**:
 
@@ -93,7 +93,7 @@ Build **Online\_Judge-AlgoRave** from the source and install dependencies:
    ```
 
 5. **Testing**
-   Online\_Judge-AlgoRave uses the test framework. Run the test suite with:
+   Online\_Codehub uses the test framework. Run the test suite with:
 
    ```bash
    npm test
