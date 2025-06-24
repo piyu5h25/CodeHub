@@ -4,6 +4,7 @@ import Homepage from './pages/Homepage'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Background from './pages/Background'
+import Problems from './pages/Problems' 
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
               <Route path="/" element={<Homepage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/problems" element={<Problems />} />
             </Routes>
           </div>
         </div>
