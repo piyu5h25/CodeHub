@@ -4,6 +4,8 @@ import executeCpp from "./executeCpp.js";
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+import cors from "cors";
+app.use(cors());
 
 app.get("/", (req, res) => {
     res.send("Hello World");

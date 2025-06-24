@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Background from './pages/Background'
 import Problems from './pages/Problems' 
+import Compiler from './pages/Compiler'
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/problems" element={<Problems />} />
+              <Route path="/compiler" element={<Compiler />} />
             </Routes>
           </div>
         </div>
