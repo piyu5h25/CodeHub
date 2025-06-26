@@ -4,7 +4,7 @@ import Split from 'react-split';
 import ProblemDetail from './ProblemDetail';
 import CodeEditor from '../components/CodeEditor';
 import Background from './Background';
-import './split.css'; // 🔥 Important!
+import './split.css'; 
 
 const ProblemEditor = () => {
   const { id } = useParams();
@@ -21,7 +21,7 @@ const ProblemEditor = () => {
           <Split
             sizes={[50, 50]}
             minSize={300}
-            className="split" // 🔥 Must match CSS class
+            className="split" 
           >
             {/* Problem Detail Panel */}
             <div>
