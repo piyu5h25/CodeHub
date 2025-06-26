@@ -64,13 +64,13 @@ const Navbar = () => {
                   to="/login"
                   className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition"
                 >
-                  Login
+                  Sign in
                 </Link>
                 <Link
                   to="/register"
                   className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition"
                 >
-                  Register
+                  Sign Up
                 </Link>
               </div>
             )}

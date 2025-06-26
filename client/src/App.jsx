@@ -5,7 +5,10 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Background from './pages/Background'
 import Problems from './pages/Problems' 
+import ProblemDetail from './pages/ProblemDetail'
 import Compiler from './pages/Compiler'
+import Terms from './pages/Terms'
+import Privacy from './pages/Privacy'
 
 const App = () => {
   return (
@@ -18,7 +21,10 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/problems" element={<Problems />} />
+              <Route path="/problems/:id" element={<ProblemDetail />} />
               <Route path="/compiler" element={<Compiler />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
             </Routes>
           </div>
         </div>

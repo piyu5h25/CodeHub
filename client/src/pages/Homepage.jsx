@@ -13,8 +13,9 @@ const Homepage = () => {
         <div className="text-center text-white max-w-6xl mx-auto">
           {/* Hero Section */}
           <div className="mb-16">
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-              CodeHub
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-white bg-clip-text text-transparent">
+              Code
+            <span className='text-[#EC4899]'>Hub</span>
             </h1>
             <p className="text-xl md:text-2xl mb-12 text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Sharpen your coding skills with algorithmic problems and compete with others in our interactive coding platform
