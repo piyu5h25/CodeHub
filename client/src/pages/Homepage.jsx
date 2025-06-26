@@ -79,7 +79,7 @@ const Homepage = () => {
                 Online Compiler
               </h2>
               <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-                Use our online compiler to test your code instantly without downloading inbuilt compilers.
+                Use our advanced online compiler with auto-completion and syntax highlighting to test your code instantly without downloading inbuilt compilers.
               </p>
             </div>
             

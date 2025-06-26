@@ -1,7 +1,9 @@
 import express from "express";
 import generateFile from "./generateFile.js";
 import executeCpp from "./executeCpp.js";
-const app = express();
+import executePython from "./executePython.js";
+import executeC from "./executeC.js";
+const app = express();  
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 import cors from "cors";
@@ -22,8 +24,17 @@ app.post("/run",async (req, res)=>{
 
      try {
         const filePath = generateFile(language, code);
-        const output = await executeCpp(filePath);
-
+        let output;
+        if(language === "cpp"){
+            output = await executeCpp(filePath);
+        }
+        else if(language === "python"){
+            output = await executePython(filePath);
+        }
+        
+        else if(language === "c"){
+            output = await executeC(filePath);
+        }
         res.json({success: true, output, filePath});
 
      } catch (error) {

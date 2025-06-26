@@ -13,7 +13,9 @@ const ProblemEditor = () => {
 
   return (
     <div className="h-screen flex flex-col text-white bg-[#0f172a] overflow-hidden">
+
       <Background />
+      
       <div className="relative z-10 flex flex-col h-full">
         
         {/* Split Container */}

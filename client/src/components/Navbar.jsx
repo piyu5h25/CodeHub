@@ -37,6 +37,12 @@ const Navbar = () => {
               Problems
             </Link>
             <Link
+              to="/compiler"
+              className="text-gray-300 hover:text-pink-500 transition font-medium"
+            >
+              Compiler
+            </Link>
+            <Link
               to="/leaderboard"
               className="text-gray-300 hover:text-pink-500 transition font-medium"
             >

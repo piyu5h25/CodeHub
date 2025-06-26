@@ -43,6 +43,10 @@ const problemSchema = new mongoose.Schema({
     type: [String],
     default: [],
    },
+   testCases: {
+    type: [String],
+    default: [],
+   },
    
 })
 export default mongoose.model("Problem", problemSchema);
