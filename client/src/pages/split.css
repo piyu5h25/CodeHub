@@ -1,4 +1,4 @@
-/* split.css */
+/* Split container */
 .split {
     display: flex;
     height: 100%;
@@ -7,3 +7,40 @@
   .split > div {
     overflow: auto;
   }
+  
+  /* Gutter base */
+  .gutter {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    transition: 
+      background-color 0.3s ease,
+      transform 0.2s ease,
+      box-shadow 0.3s ease;
+  }
+  
+  /* Horizontal gutter (left-right split) */
+  .gutter.gutter-horizontal {
+    cursor: col-resize;
+    width: 8px;
+  }
+  
+  /* Vertical gutter (if you use vertical splits) */
+  .gutter.gutter-vertical {
+    cursor: row-resize;
+    height: 8px;
+  }
+  
+  /* 🎯 Animation on Hover */
+  .gutter:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.2); /* Slightly enlarge */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  }
+  
+  /* 🎯 Animation on Active Drag */
+  .gutter:active {
+    transform: scale(1.4);
+    background-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  }
+  

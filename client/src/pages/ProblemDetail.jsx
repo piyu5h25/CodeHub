@@ -92,6 +92,32 @@ const ProblemDetail = () => {
   return (
     <div className="h-full flex flex-col text-white bg-[#0f172a] overflow-hidden">
       <Background />
+      <style jsx>{`
+        /* Custom scrollbar styles */
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(15, 23, 42, 0.3);
+          border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(100, 116, 139, 0.5);
+          border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(100, 116, 139, 0.7);
+        }
+        
+        /* Firefox scrollbar */
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(100, 116, 139, 0.5) rgba(15, 23, 42, 0.3);
+        }
+      `}</style>
       <div className="relative z-10 flex flex-col h-full">
         {/* Header */}
         <div className="bg-slate-900/80 backdrop-blur-sm border-b border-slate-800 p-4">
@@ -115,7 +141,7 @@ const ProblemDetail = () => {
         </div>
 
         {/* Problem Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
           <div className="max-w-none">
             {/* Problem Description */}
             <div className="mb-8">
@@ -178,13 +204,13 @@ const ProblemDetail = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-slate-900/60 backdrop-blur-sm rounded-lg border border-slate-800 p-6">
                     <h3 className="text-lg font-medium text-white mb-3">Sample Input</h3>
-                    <pre className="text-green-400 bg-slate-800 rounded p-3 overflow-x-auto">
+                    <pre className="text-green-400 bg-slate-800 rounded p-3 overflow-x-auto custom-scrollbar">
                       {problem.sampleInput}
                     </pre>
                   </div>
                   <div className="bg-slate-900/60 backdrop-blur-sm rounded-lg border border-slate-800 p-6">
                     <h3 className="text-lg font-medium text-white mb-3">Sample Output</h3>
-                    <pre className="text-blue-400 bg-slate-800 rounded p-3 overflow-x-auto">
+                    <pre className="text-blue-400 bg-slate-800 rounded p-3 overflow-x-auto custom-scrollbar">
                       {problem.sampleOutput}
                     </pre>
                   </div>
@@ -212,4 +238,4 @@ const ProblemDetail = () => {
   );
 };
 
-export default ProblemDetail; 
+export default ProblemDetail;
