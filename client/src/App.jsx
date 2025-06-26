@@ -5,30 +5,31 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Background from './pages/Background'
 import Problems from './pages/Problems' 
-import ProblemDetail from './pages/ProblemDetail'
 import Compiler from './pages/Compiler'
+import ProblemEditor from './pages/ProblemEditor'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
+import ErrorBoundary from './components/ErrorBoundary'
 
 const App = () => {
   return (
-    
-        <div className="relative min-h-screen">
-          <Background />
-          <div className="relative z-10">
-            <Routes>
-              <Route path="/" element={<Homepage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/problems" element={<Problems />} />
-              <Route path="/problems/:id" element={<ProblemDetail />} />
-              <Route path="/compiler" element={<Compiler />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-            </Routes>
-          </div>
+    <ErrorBoundary>
+      <div className="relative min-h-screen">
+        <Background />
+        <div className="relative z-10">
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/problems" element={<Problems />} />
+            <Route path="/problems/:id" element={<ProblemEditor />} />
+            <Route path="/compiler" element={<Compiler />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+          </Routes>
         </div>
-      
+      </div>
+    </ErrorBoundary>
   );
 }
 

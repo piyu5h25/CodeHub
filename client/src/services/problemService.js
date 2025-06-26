@@ -11,6 +11,16 @@ export const problemService = {
         return response.json();
     },
 
+    async getProblemById(id) {
+        const response = await fetch(`${API_BASE_URL}/problems/id/${id}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.json();
+    },
+
     async getProblemByTitle(title) {
         const response = await fetch(`${API_BASE_URL}/problems/${title}`,{
             method: 'GET',

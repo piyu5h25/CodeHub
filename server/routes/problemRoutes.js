@@ -1,10 +1,11 @@
 import express from "express";
-import { createProblem, getProblems, getProblemByTitle, updateProblem, deleteProblem, getProblemsByTopic, getProblemsByDifficulty, getProblemsByCompany } from "../controllers/problemController.js";
+import { createProblem, getProblems, getProblemById, getProblemByTitle, updateProblem, deleteProblem, getProblemsByTopic, getProblemsByDifficulty, getProblemsByCompany } from "../controllers/problemController.js";
 
 const router = express.Router();
 
 router.post("/create", createProblem);
 router.get("/", getProblems);
+router.get("/id/:id", getProblemById);
 router.get("/:title", getProblemByTitle);
 router.put("/:title", updateProblem);
 router.delete("/:title", deleteProblem);

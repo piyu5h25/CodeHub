@@ -1,0 +1,9 @@
+/* split.css */
+.split {
+    display: flex;
+    height: 100%;
+  }
+  
+  .split > div {
+    overflow: auto;
+  }
