@@ -17,18 +17,24 @@ const Compiler = () => {
 using namespace std;
 
 int main() {
-    cout << "Hello, World!" << endl;
+    cout << "Hello from C++" << endl;
     return 0;
 }`;
       case 'c':
         return `#include <stdio.h>
 
 int main() {
-    printf("Hello, World!\\n");
+    printf("Hello from C\\n");
     return 0;
 }`;
       case 'python':
-        return `print("Hello, World!")`;
+        return `print("Hello from Python")`;
+      case 'java':
+        return `public class Main {
+      public static void main(String[] args) {
+        System.out.println("Hello from Java");
+      }
+    }`;
       default:
         return '';
     }
@@ -64,6 +70,8 @@ int main() {
         return 'cpp';
       case 'python':
         return 'python';
+      case 'java':
+        return 'java';
       default:
         return 'cpp';
     }
@@ -83,6 +91,7 @@ int main() {
           <option value="cpp">C++</option>
           <option value="c">C</option>
           <option value="python">Python</option>
+          <option value="java">Java</option>
         </select>
 
         <button

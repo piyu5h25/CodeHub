@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { problemService } from '../services/problemService';
 import Background from './Background';
-
+import EditorNav from '../components/EditorNav';
 const ProblemDetail = () => {
   const { id } = useParams();
   const [problem, setProblem] = useState(null);
@@ -54,6 +54,7 @@ const ProblemDetail = () => {
     return (
       <div className="h-full flex items-center justify-center text-white bg-[#0f172a]">
         <Background />
+        
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
           <span className="text-gray-300">Loading problem...</span>
@@ -92,6 +93,7 @@ const ProblemDetail = () => {
   return (
     <div className="h-full flex flex-col text-white bg-[#0f172a] overflow-hidden">
       <Background />
+      <EditorNav />
       <style jsx>{`
         /* Custom scrollbar styles */
         .custom-scrollbar::-webkit-scrollbar {

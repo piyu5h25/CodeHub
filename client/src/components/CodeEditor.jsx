@@ -17,23 +17,32 @@ const CodeEditor = ({ problemId, problemName }) => {
 using namespace std;
 
 int main() {
-    cout << "Hello, World!" << endl;
+    cout << "Hello from C++" << endl;
     return 0;
 }`;
       case 'c':
         return `#include <stdio.h>
 
 int main() {
-    printf("Hello, World!\\n");
+    printf("Hello from C\\n");
     return 0;
 }`;
       case 'python':
-        return `print("Hello, World!")`;
+        return `print("Hello from Python")`;
+      case 'java':
+        return `public class Main {
+      public static void main(String[] args) {
+        System.out.println("Hello from Java");
+      }
+    }`;
       default:
         return '';
     }
   };
+  
+  
 
+ 
   // 🔥 Update code when language changes
   useEffect(() => {
     setCode(getDefaultCode(language));
@@ -52,6 +61,7 @@ int main() {
       setOutput(data.output);
     } catch (error) {
       console.log(error.response);
+      
       setOutput('Error connecting to backend');
     } finally {
       setLoading(false);
@@ -65,6 +75,8 @@ int main() {
         return 'cpp';
       case 'python':
         return 'python';
+      case 'java':
+        return 'java';
       default:
         return 'cpp';
     }
@@ -89,6 +101,7 @@ int main() {
           <option value="cpp">C++</option>
           <option value="c">C</option>
           <option value="python">Python</option>
+          <option value="java">Java</option>
         </select>
 
         <button
@@ -116,7 +129,7 @@ int main() {
       {/* Code Editor */}
       <div className="w-full max-w-4xl bg-slate-900 rounded-xl shadow-lg overflow-hidden">
         <Editor
-          height="380px"
+          height="514px"
           language={mapLanguage()}
           theme="vs-dark"
           value={code}
@@ -133,21 +146,21 @@ int main() {
       </div>
 
       {/* Input and Output */}
-      <div className="w-full max-w-4xl mt-6 flex gap-4">
+      <div className="w-full max-w-4xl pt-2  flex gap-4">
         <div className="flex-1">
-          <label className="block text-white mb-2 font-semibold">Custom Input (stdin):</label>
+          <label className="block text-white  font-semibold">Custom Input (stdin):</label>
           <textarea
             value={input}
             onChange={e => setInput(e.target.value)}
-            className="w-full p-3 rounded-lg bg-slate-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
-            rows={4}
+            className="w-full px-3 rounded-lg bg-slate-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            rows={2}
             placeholder="Enter input for the program..."
           />
         </div>
 
-        <div className="flex-1 bg-green-100 text-black rounded-lg shadow-lg p-4">
-          <h2 className="font-bold mb-2">Output:</h2>
-          <pre className="whitespace-pre-wrap text-sm min-h-[60px]">
+        <div className="flex-1 ">
+        <label className="block text-white  font-semibold">Output:</label>
+          <pre className="w-full px-3 min-h-[48px] rounded-lg bg-slate-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
             {output ? output : '// Your output will be displayed here.'}
           </pre>
         </div>

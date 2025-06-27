@@ -13,7 +13,7 @@ if(!fs.existsSync(outputPath)){
 const executeCpp = async (filePath)=>{ // filePath: C:\Users\trive\Desktop\Online Judge\compiler/codes/a96cf189-a776-4002-8c54-6ad70b5cb4c4.cpp
     const jobId = path.basename(filePath).split(".")[0]; // jobId: ['a96cf189-a776-4002-8c54-6ad70b5cb4c4', "cpp"]
     const outputFile = `${jobId}.exe`;
-    const outPath = path.join(outputPath, `${jobId}.exe`); // outPath: C:\Users\trive\Desktop\Online Judge\compiler/outputs/a96cf189-a776-4002-8c54-6ad70b5cb4c4.exe
+    const outPath = path.join(outputPath, `${outputFile}`); // outPath: C:\Users\trive\Desktop\Online Judge\compiler/outputs/a96cf189-a776-4002-8c54-6ad70b5cb4c4.exe
 
     return new Promise((resolve, reject)=>{
         // g++ is a compiler for c++ language

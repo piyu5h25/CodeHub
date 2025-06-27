@@ -3,6 +3,7 @@ import generateFile from "./generateFile.js";
 import executeCpp from "./executeCpp.js";
 import executePython from "./executePython.js";
 import executeC from "./executeC.js";
+import executeJava from "./executeJava.js";
 const app = express();  
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -31,10 +32,13 @@ app.post("/run",async (req, res)=>{
         else if(language === "python"){
             output = await executePython(filePath);
         }
-        
+        else if(language === "java"){
+            output = await executeJava(filePath);
+        }
         else if(language === "c"){
             output = await executeC(filePath);
         }
+
         res.json({success: true, output, filePath});
 
      } catch (error) {

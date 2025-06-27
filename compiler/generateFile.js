@@ -13,15 +13,39 @@ if(!fs.existsSync(dirCodes)){
 
 
 
-const generateFile = (language, code)=>{
-    const jobId = uuidv4(); // jobId: unique id for each file: a96cf189-a776-4002-8c54-6ad70b5cb4c4
-    const fileName = `${jobId}.${language}`; // fileName: a96cf189-a776-4002-8c54-6ad70b5cb4c4.cpp
+// const generateFile = (language, code)=>{
+//     const jobId = uuidv4(); // jobId: unique id for each file: a96cf189-a776-4002-8c54-6ad70b5cb4c4
+//     console.log(jobId);
+//     const fileName = `${jobId}.${language}`; // fileName: a96cf189-a776-4002-8c54-6ad70b5cb4c4.cpp
 
-    const filePath = path.join(dirCodes, fileName); // filePath: C:\Users\trive\Desktop\Online Judge\compiler/codes/a96cf189-a776-4002-8c54-6ad70b5cb4c4.cpp
+//     const filePath = path.join(dirCodes, fileName); // filePath: C:\Users\trive\Desktop\Online Judge\compiler/codes/a96cf189-a776-4002-8c54-6ad70b5cb4c4.cpp
 
-    fs.writeFileSync(filePath, code); 
 
+//     if (language === "java") {
+//         code = code.replace(/public\s+class\s+\w+/, `public class ${jobId}`);
+//     }
+//     fs.writeFileSync(filePath, code); 
+
+//     return filePath;
+
+// }
+//
+
+
+const generateFile = (language, code) => {
+    const jobId = uuidv4();
+    
+ 
+    const safeClassName = `Class_${jobId.replace(/-/g, "_")}`;
+    
+    const fileName = `${safeClassName}.${language}`;
+    const filePath = path.join(dirCodes, fileName);
+
+    if (language === "java") {
+        code = code.replace(/public\s+class\s+\w+/, `public class ${safeClassName}`);
+    }
+
+    fs.writeFileSync(filePath, code);
     return filePath;
-
-}
+};
 export default generateFile;
