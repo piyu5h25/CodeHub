@@ -1,6 +1,6 @@
 // pages/LoginPage.jsx
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../context/AuthContext'
 import { authService } from '../services/authService'
@@ -17,6 +17,8 @@ const LoginPage = () => {
   
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const redirectTo = location.state?.redirectTo || '/'
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -28,7 +30,7 @@ const LoginPage = () => {
       
       if (response.success) {
         login(response.user, response.token)
-        navigate('/')
+        navigate(redirectTo, { replace: true })
       } else {
         setError(response.message)
       }

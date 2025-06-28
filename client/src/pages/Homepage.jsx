@@ -1,10 +1,51 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 
 const Homepage = () => {
   const { user } = useAuth()
+  const [totalUsers, setTotalUsers] = useState(0)
+  const [loading, setLoading] = useState(true)
+
+  // Fetch total users count
+  useEffect(() => {
+    const fetchUserCount = async () => {
+      try {
+        // Replace with your actual API endpoint
+        const response = await fetch('/api/users/count')
+        const data = await response.json()
+        setTotalUsers(data.count)
+      } catch (error) {
+        console.error('Error fetching user count:', error)
+        // Fallback to a default number or keep it at 0
+        setTotalUsers(221) // Example fallback
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUserCount()
+  }, [])
+
+  // Animated counter effect
+  const [displayCount, setDisplayCount] = useState(0)
+  useEffect(() => {
+    if (totalUsers > 0) {
+      let start = 0
+      const increment = totalUsers / 100
+      const timer = setInterval(() => {
+        start += increment
+        if (start >= totalUsers) {
+          setDisplayCount(totalUsers)
+          clearInterval(timer)
+        } else {
+          setDisplayCount(Math.floor(start))
+        }
+      }, 20)
+      return () => clearInterval(timer)
+    }
+  }, [totalUsers])
 
   return (
     <>
@@ -17,9 +58,24 @@ const Homepage = () => {
               Code
             <span className='text-[#EC4899]'>Hub</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-12 text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Sharpen your coding skills with algorithmic problems and compete with others in our interactive coding platform
             </p>
+            
+            {/* User Count Display */}
+            <div className="mb-8">
+              <div className="inline-flex items-center gap-3 bg-slate-900/60 backdrop-blur-sm border border-slate-700 rounded-full px-6 py-3">
+                <div className="flex -space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full border-2 border-slate-900"></div>
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full border-2 border-slate-900"></div>
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full border-2 border-slate-900"></div>
+                  <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full border-2 border-slate-900"></div>
+                </div>
+                <span className="text-gray-300">
+                  Join {loading ? '...' : displayCount.toLocaleString()}+ developers already coding
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Authentication Section */}
@@ -67,6 +123,8 @@ const Homepage = () => {
             </div>
           )}
 
+         
+
           {/* Compiler Section */}
           <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 rounded-3xl p-12 max-w-4xl mx-auto">
             <div className="mb-8">
@@ -79,7 +137,7 @@ const Homepage = () => {
                 Online Compiler
               </h2>
               <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-                Use our advanced online compiler with auto-completion and syntax highlighting to test your code instantly without downloading inbuilt compilers.
+                Use our advanced online compiler with auto-completion and syntax highlighting to test your code instantly without the hassle of downloading tons of compilers.
               </p>
             </div>
             

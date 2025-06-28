@@ -15,8 +15,8 @@ const problemSchema = new mongoose.Schema({
         required: true,
     },
     Topic: {
-        type: String,
-        enum: ["Array", "String", "Math", "Dynamic Programming", "Tree", "Graph", "Greedy", "Stack", "Queue", "Hash Table", "Heap", "Binary Search", "Binary Tree", "Binary Search Tree", "Binary Indexed Tree", "Segment Tree", "Trie", "Union Find", "Disjoint Set", "Binary Search Tree", "Binary Indexed Tree", "Segment Tree", "Trie", "Union Find", "Disjoint Set"],
+        type: [String],
+        enum: ["Array", "String", "Math", "Dynamic Programming", "Tree", "Graph", "Greedy", "Stack", "Queue", "Hash Table", "Heap", "Binary Search", "Binary Tree", "Binary Search Tree", "Binary Indexed Tree", "Segment Tree", "Trie", "Union Find", "Disjoint Set", "Binary Search Tree", "Binary Indexed Tree", "Segment Tree", "Trie", "Union Find", "Disjoint Set", "Basic Math"],
         
     },
     tags: {
@@ -44,9 +44,15 @@ const problemSchema = new mongoose.Schema({
     default: [],
    },
    testCases: {
-    type: [String],
-    default: [],
-   },
+    type: [
+      {
+        input: { type: String, required: true },
+        output: { type: String, required: true }
+      }
+    ],
+    default: []
+  }
+  
    
 })
 export default mongoose.model("Problem", problemSchema);

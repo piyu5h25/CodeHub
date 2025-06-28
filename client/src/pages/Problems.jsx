@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, Navigate } from 'react-router-dom';
 import { problemService } from '../services/problemService';
 import Background from './Background';
+import { useAuth } from '../context/AuthContext';
+
+
 
 const Problems = () => {
   const [problems, setProblems] = useState([]);
@@ -10,6 +13,9 @@ const Problems = () => {
   const [topic, setTopic] = useState('All');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
+  const location = useLocation();
+  
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -49,6 +55,10 @@ const Problems = () => {
         return 'text-gray-400 bg-gray-500/10 border-gray-500/20';
     }
   };
+
+  if(!user){
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
 
   return (
     <div className="min-h-screen flex flex-col text-white bg-[#0f172a]">

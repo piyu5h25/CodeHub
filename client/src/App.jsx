@@ -10,6 +10,8 @@ import ProblemEditor from './pages/ProblemEditor'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
 import ErrorBoundary from './components/ErrorBoundary'
+import ProtectedRoute from './components/ProtectedRoute'
+import AuthSelect from './pages/AuthSelect'
 
 const App = () => {
   return (
@@ -21,9 +23,20 @@ const App = () => {
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/problems" element={<Problems />} />
+            <Route path="/auth-select" element={<AuthSelect />} />
+            <Route path="/problems" element={
+              <ProtectedRoute>
+
+                <Problems />
+              </ProtectedRoute>
+              } />
             <Route path="/problems/:id" element={<ProblemEditor />} />
-            <Route path="/compiler" element={<Compiler />} />
+            <Route path="/compiler" element={
+              <ProtectedRoute>
+
+                <Compiler />
+              </ProtectedRoute>
+              } />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
           </Routes>

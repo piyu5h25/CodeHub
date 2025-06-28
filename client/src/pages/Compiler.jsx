@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../context/AuthContext';
+import { Navigate, useLocation, Link } from 'react-router-dom';
 
 const Compiler = () => {
   const [code, setCode] = useState('');
@@ -9,6 +11,12 @@ const Compiler = () => {
   const [input, setInput] = useState('');
   const [language, setLanguage] = useState('cpp');
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const location = useLocation();
+
+  if(!user){
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
 
   const getDefaultCode = (lang) => {
     switch (lang) {

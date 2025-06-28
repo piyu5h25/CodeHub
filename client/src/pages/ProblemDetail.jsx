@@ -3,13 +3,24 @@ import { useParams } from 'react-router-dom';
 import { problemService } from '../services/problemService';
 import Background from './Background';
 import EditorNav from '../components/EditorNav';
-const ProblemDetail = () => {
-  const { id } = useParams();
-  const [problem, setProblem] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+import { useAuth } from '../context/AuthContext';
+import { Navigate } from 'react-router-dom';
 
+const ProblemDetail = ({ problem: propProblem }) => {
+  const { id } = useParams();
+  const [problem, setProblem] = useState(propProblem || null);
+  const [loading, setLoading] = useState(!propProblem);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
+
+  // Only fetch problem if not provided as prop (for standalone usage)
   useEffect(() => {
+    if (propProblem) {
+      setProblem(propProblem);
+      setLoading(false);
+      return;
+    }
+
     const fetchProblem = async () => {
       if (!id) {
         setError('No problem ID provided');
@@ -35,7 +46,7 @@ const ProblemDetail = () => {
     };
 
     fetchProblem();
-  }, [id]);
+  }, [id, propProblem]);
 
   const getDifficultyColor = (diff) => {
     switch (diff?.toLowerCase()) {
@@ -53,8 +64,7 @@ const ProblemDetail = () => {
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center text-white bg-[#0f172a]">
-        <Background />
-        
+        {!propProblem && <Background />}
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
           <span className="text-gray-300">Loading problem...</span>
@@ -66,7 +76,7 @@ const ProblemDetail = () => {
   if (error || !problem) {
     return (
       <div className="h-full flex items-center justify-center text-white bg-[#0f172a]">
-        <Background />
+        {!propProblem && <Background />}
         <div className="relative z-10 text-center">
           <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
@@ -88,6 +98,10 @@ const ProblemDetail = () => {
         </div>
       </div>
     );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" />
   }
 
   return (
@@ -156,34 +170,6 @@ const ProblemDetail = () => {
                 </div>
               </div>
             </div>
-
-            {/* Input Format */}
-            {problem.inputFormat && (
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold text-white mb-4">Input Format</h2>
-                <div className="bg-slate-900/60 backdrop-blur-sm rounded-lg border border-slate-800 p-6">
-                  <div className="prose prose-invert max-w-none">
-                    <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
-                      {problem.inputFormat}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Output Format */}
-            {problem.outputFormat && (
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold text-white mb-4">Output Format</h2>
-                <div className="bg-slate-900/60 backdrop-blur-sm rounded-lg border border-slate-800 p-6">
-                  <div className="prose prose-invert max-w-none">
-                    <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
-                      {problem.outputFormat}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Constraints */}
             {problem.constraints && (
