@@ -175,3 +175,21 @@ export const login = async (req, res) => {
         });
     }
 }
+
+// GET USER COUNT CONTROLLER
+export const getUserCount = async (req, res) => {
+    try {
+        const count = await User.countDocuments();
+        res.status(200).json({
+            success: true,
+            count: count
+        });
+    } catch (error) {
+        console.error("Error getting user count:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+};

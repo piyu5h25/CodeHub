@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { authService } from '../services/authService'
 import Navbar from '../components/Navbar'
 
 const Homepage = () => {
@@ -12,10 +13,12 @@ const Homepage = () => {
   useEffect(() => {
     const fetchUserCount = async () => {
       try {
-        // Replace with your actual API endpoint
-        const response = await fetch('/api/users/count')
-        const data = await response.json()
-        setTotalUsers(data.count)
+        const data = await authService.getUserCount()
+        if (data.success) {
+          setTotalUsers(data.count)
+        } else {
+          throw new Error(data.message || 'Failed to fetch user count')
+        }
       } catch (error) {
         console.error('Error fetching user count:', error)
         // Fallback to a default number or keep it at 0
@@ -72,7 +75,7 @@ const Homepage = () => {
                   <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full border-2 border-slate-900"></div>
                 </div>
                 <span className="text-gray-300">
-                  Join {loading ? '...' : displayCount.toLocaleString()}+ developers already coding
+                  Join {loading ? '...' : displayCount.toLocaleString()} developers already coding
                 </span>
               </div>
             </div>

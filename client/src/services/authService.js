@@ -22,5 +22,10 @@ export const authService = {
       body: JSON.stringify(userData),
     })
     return response.json()
+  },
+
+  async getUserCount() {
+    const response = await fetch('/api/users/count')
+    return response.json()
   }
 }
