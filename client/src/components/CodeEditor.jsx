@@ -143,6 +143,21 @@ int main() {
     }
   };
 
+  const handleSubmitSolution = async () => {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/id/${problemId}/submit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code,
+         language,
+        problemId,
+       })
+    });
+    const result = await response.json();
+    console.log(result);
+    alert(result.verdict)
+  };
   // Function to load sample input
   const loadSampleInput = () => {
     if (sampleInput) {
@@ -204,6 +219,24 @@ int main() {
                   d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
               </svg>
               Run Code
+            </>
+          )}
+        </button>
+        <button
+          onClick={handleSubmitSolution}
+          disabled={loading}
+          className={`flex-1 inline-flex items-center justify-center ${
+            loading ? 'opacity-50 cursor-not-allowed' : 'bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600'
+          } text-white font-semibold rounded-lg px-5 py-2 shadow-md transition`}
+        >
+          {loading ? 'Submitting...' : (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round"
+                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Submit Solution
             </>
           )}
         </button>
