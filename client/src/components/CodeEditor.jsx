@@ -53,7 +53,7 @@ int main() {
     }
   }, [sampleInput]);
 
-  const handleSubmit = async () => {
+  const handleRunCode = async () => {
     const payload = {
       language,
       code,
@@ -63,101 +63,50 @@ int main() {
     try {
       setLoading(true);
       setIsError(false);
-      
-      const response = await axios.post(import.meta.env.VITE_BACKEND_URL, payload);
+
+      const response = await axios.post(`${import.meta.env.VITE_COMPILER_URL}/run`, payload);
       const data = response.data;
-      
-      // Handle successful response - check various possible error indicators
+
       if (data.error) {
-        // Direct error field
         setIsError(true);
         setOutput(data.error);
-      } else if (data.stderr && data.stderr.trim()) {
-        // Standard error output (compilation errors usually go here)
-        setIsError(true);
-        setOutput(data.stderr);
-      } else if (data.compile_output && data.compile_output.trim()) {
-        // Some APIs use compile_output for compilation errors
-        setIsError(true);
-        setOutput(data.compile_output);
-      } else if (data.message && data.message.includes('error')) {
-        // Message field containing error
-        setIsError(true);
-        setOutput(data.message);
-      } else if (data.status && data.status.description && data.status.description !== 'Accepted') {
-        // Status-based error (like Judge0 API)
-        setIsError(true);
-        setOutput(data.status.description + (data.stderr ? '\n' + data.stderr : ''));
       } else if (data.output) {
-        // Successful execution with output
         setIsError(false);
         setOutput(data.output);
-      } else if (data.stdout) {
-        // Some APIs use stdout field
-        setIsError(false);
-        setOutput(data.stdout);
       } else {
-        // Successful execution but no output
         setIsError(false);
         setOutput('Program executed successfully with no output.');
       }
-      
+
     } catch (error) {
-      console.log('Full error object:', error);
-      console.log('Error response:', error.response);
-      
       setIsError(true);
-      
-      // Enhanced error handling for different response structures
-      if (error.response) {
-        const { status, data: errorData } = error.response;
-        
-        if (errorData) {
-          // Try to extract meaningful error message
-          if (typeof errorData === 'string') {
-            setOutput(errorData);
-          } else if (errorData.error) {
-            setOutput(errorData.error);
-          } else if (errorData.stderr) {
-            setOutput(errorData.stderr);
-          } else if (errorData.compile_output) {
-            setOutput(errorData.compile_output);
-          } else if (errorData.message) {
-            setOutput(errorData.message);
-          } else if (errorData.status && errorData.status.description) {
-            setOutput(errorData.status.description);
-          } else {
-            // Show the full error data for debugging
-            setOutput(`Server Error (${status}):\n${JSON.stringify(errorData, null, 2)}`);
-          }
-        } else {
-          setOutput(`Server Error: HTTP ${status}`);
-        }
-      } else if (error.request) {
-        setOutput('Network Error: No response from server. Please check your connection.');
-      } else {
-        setOutput(`Request Error: ${error.message}`);
-      }
+      setOutput('Error executing code: ' + error.message);
     } finally {
       setLoading(false);
     }
-  };
+};
 
-  const handleSubmitSolution = async () => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/id/${problemId}/submit`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ code,
-         language,
-        problemId,
-       })
-    });
-    const result = await response.json();
-    console.log(result);
-    alert(result.verdict)
-  };
+const handleSubmitSolution = async () => {
+  try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              code,
+              language,
+              problemId,
+          }),
+      });
+
+      const result = await response.json();
+      console.log(result);
+      alert(`Verdict: ${result.verdict}`);
+  } catch (error) {
+      console.error('Error submitting solution:', error);
+      alert('Submission failed. Please try again.');
+  }
+};
+
   // Function to load sample input
   const loadSampleInput = () => {
     if (sampleInput) {
@@ -203,7 +152,7 @@ int main() {
         
 
         <button
-          onClick={handleSubmit}
+          onClick={handleRunCode}
           disabled={loading}
           className={`flex-1 inline-flex items-center justify-center ${
             loading ? 'opacity-50 cursor-not-allowed' : 'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600'

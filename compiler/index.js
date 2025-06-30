@@ -75,5 +75,5 @@ app.post("/ai-review", async (req, res)=>{
 })
 
 app.listen(PORT, () => {    
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Compiler is running on port ${PORT}`);
 });
