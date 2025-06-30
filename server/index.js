@@ -7,7 +7,7 @@ import cors from "cors";
 import User from "./models/User.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
-// import submitRoutes from "./routes/submitRoutes.js";
+import submitRoutes from "./routes/submitRoutes.js";
 
 import problemRoutes from "./routes/problemRoutes.js";
 
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", authRoutes);
 app.use("/problems", problemRoutes);
-// app.use("/submit", submitRoutes);
+app.use("/submit", submitRoutes);
 app.get("/", (req, res) => {
     res.send("Hello World");
 });

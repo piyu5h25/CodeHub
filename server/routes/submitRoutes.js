@@ -1,6 +1,8 @@
-import express from "express";
-const router = express.Router();
-const { handleSubmission } = require("../controllers/submitController.js");
+import express from 'express';
+import { handleSubmission } from '../controllers/submitController.js';
 
-router.post('/api/submit', handleSubmission);
-module.exports = router;
+const router = express.Router();
+
+router.post('/', handleSubmission);
+
+export default router;

@@ -88,7 +88,7 @@ int main() {
 
 const handleSubmitSolution = async () => {
   try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/submit`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/submit`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
