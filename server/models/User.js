@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 
-//  user schema
-
-
-
+// user schema
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -33,8 +30,37 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "Password is required"],
-        minlength: [5, "Password must be at least 8 characters long"],
+        minlength: [5, "Password must be at least 5 characters long"],
     },
-}, {timestamps: true});
+
+    // ⭐️ For leaderboard:
+    totalScore: {
+        type: Number,
+        default: 0,
+    },
+
+    
+    solvedProblems: [
+        {
+            problemId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Problem",
+                required: true,
+            },
+            difficulty: {
+                type: String,
+                enum: ["Beginner", "Easy", "Medium", "Hard"],
+                required: true,
+            },
+        }
+    ],
+
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user",
+    },
+
+}, { timestamps: true });
 
 export default mongoose.model("User", userSchema);
