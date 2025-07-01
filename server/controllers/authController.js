@@ -155,6 +155,8 @@ export const login = async (req, res) => {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
+            totalScore: user.totalScore,
+            solvedProblems: user.solvedProblems,
             createdAt: user.createdAt,
         };
 
