@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import axios from 'axios';
 
 const CodeEditor = ({ problemId, problemName, sampleInput }) => {
   const [code, setCode] = useState('');
@@ -8,7 +7,14 @@ const CodeEditor = ({ problemId, problemName, sampleInput }) => {
   const [input, setInput] = useState('');
   const [language, setLanguage] = useState('cpp');
   const [loading, setLoading] = useState(false);
-  const [isError, setIsError] = useState(false); // Track if output is an error
+  const [submitting, setSubmitting] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [submitResult, setSubmitResult] = useState(null);
+
+  // 🔑 Generate storage keys for persistence
+  const getStorageKey = (key) => {
+    return problemId ? `codeEditor_${problemId}_${key}` : `codeEditor_global_${key}`;
+  };
 
   // 🚀 Default Code Template Based on Language
   const getDefaultCode = (lang) => {
@@ -41,18 +47,82 @@ int main() {
     }
   };
 
-  // 🔥 Update code when language changes
+  // 💾 Save to localStorage
+  const saveToStorage = (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (error) {
+      console.warn('Failed to save to localStorage:', error);
+    }
+  };
+
+  // 📖 Load from localStorage
+  const loadFromStorage = (key, defaultValue = '') => {
+    try {
+      const saved = localStorage.getItem(key);
+      return saved !== null ? saved : defaultValue;
+    } catch (error) {
+      console.warn('Failed to load from localStorage:', error);
+      return defaultValue;
+    }
+  };
+
+  // 🔄 Initialize component with saved data
   useEffect(() => {
-    setCode(getDefaultCode(language));
-  }, [language]);
+    // Load saved language preference
+    const savedLanguage = loadFromStorage(getStorageKey('language'), 'cpp');
+    setLanguage(savedLanguage);
+
+    // Load saved code for this language and problem
+    const savedCode = loadFromStorage(getStorageKey(`code_${savedLanguage}`));
+    if (savedCode) {
+      setCode(savedCode);
+    } else {
+      setCode(getDefaultCode(savedLanguage));
+    }
+
+    // Load saved input
+    const savedInput = loadFromStorage(getStorageKey('input'), sampleInput || '');
+    setInput(savedInput);
+  }, [problemId, sampleInput]);
+
+  // 🔥 Update code when language changes and save to storage
+  useEffect(() => {
+    // Save current language preference
+    saveToStorage(getStorageKey('language'), language);
+
+    // Load saved code for new language or use default
+    const savedCode = loadFromStorage(getStorageKey(`code_${language}`));
+    if (savedCode) {
+      setCode(savedCode);
+    } else {
+      const defaultCode = getDefaultCode(language);
+      setCode(defaultCode);
+      // Save default code immediately
+      saveToStorage(getStorageKey(`code_${language}`), defaultCode);
+    }
+  }, [language, problemId]);
+
+  // 💾 Save code whenever it changes
+  useEffect(() => {
+    if (code) {
+      saveToStorage(getStorageKey(`code_${language}`), code);
+    }
+  }, [code, language, problemId]);
+
+  // 💾 Save input whenever it changes
+  useEffect(() => {
+    saveToStorage(getStorageKey('input'), input);
+  }, [input, problemId]);
 
   // 🎯 Set sample input when component mounts or sampleInput changes
   useEffect(() => {
-    if (sampleInput) {
+    if (sampleInput && !loadFromStorage(getStorageKey('input'))) {
       setInput(sampleInput);
     }
-  }, [sampleInput]);
+  }, [sampleInput, problemId]);
 
+  
   const handleRunCode = async () => {
     const payload = {
       language,
@@ -63,9 +133,14 @@ int main() {
     try {
       setLoading(true);
       setIsError(false);
+      setSubmitResult(null); // Clear previous submit results
 
-      const response = await axios.post(`${import.meta.env.VITE_COMPILER_URL}/run`, payload);
-      const data = response.data;
+      const response = await fetch(`${import.meta.env.VITE_COMPILER_URL}/run`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
 
       if (data.error) {
         setIsError(true);
@@ -84,33 +159,115 @@ int main() {
     } finally {
       setLoading(false);
     }
-};
+  };
 
-const handleSubmitSolution = async () => {
-  try {
+  const handleSubmitSolution = async () => {
+    try {
+      setSubmitting(true);
+      setSubmitResult(null);
+
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/submit`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-              code,
-              language,
-              problemId,
-          }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code,
+          language,
+          problemId,
+        }),
       });
 
       const result = await response.json();
-      console.log(result);
-      alert(`Verdict: ${result.verdict}`);
-  } catch (error) {
-      console.error('Error submitting solution:', error);
-      alert('Submission failed. Please try again.');
-  }
-};
+      console.log('Submit Response:', result);
 
-  // Function to load sample input
-  const loadSampleInput = () => {
-    if (sampleInput) {
-      setInput(sampleInput);
+      // Process the result to extract relevant information
+      const processedResult = {
+        verdict: result.verdict || result.status || 'Unknown',
+        totalTestcases: result.totalTestcases || result.total_testcases || result.testCases || 0,
+        passedTestcases: result.passedTestcases || result.passed_testcases || result.passedTestCases || 0,
+        failedTestcase: null,
+        executionTime: result.executionTime || result.execution_time || result.time || 'N/A',
+        memoryUsed: result.memoryUsed || result.memory_used || result.memory || 'N/A',
+        error: result.error || result.compilation_error || null,
+        details: result.details || result.message || null
+      };
+
+      // Find failed testcase number
+      if (result.failedTestcase || result.failed_testcase) {
+        processedResult.failedTestcase = result.failedTestcase || result.failed_testcase;
+      } else if (processedResult.passedTestcases < processedResult.totalTestcases && processedResult.totalTestcases > 0) {
+        processedResult.failedTestcase = processedResult.passedTestcases + 1;
+      }
+
+      // Handle testcase array if provided
+      if (result.testcases && Array.isArray(result.testcases)) {
+        const failedIndex = result.testcases.findIndex(tc => tc.status === 'failed' || tc.status === 'FAILED' || !tc.passed);
+        if (failedIndex !== -1) {
+          processedResult.failedTestcase = failedIndex + 1;
+        }
+      }
+
+      setSubmitResult(processedResult);
+
+    } catch (error) {
+      console.error('Error submitting solution:', error);
+      setSubmitResult({
+        verdict: 'Submission Error',
+        error: 'Failed to submit solution. Please check your connection and try again.',
+        totalTestcases: 0,
+        passedTestcases: 0
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const getVerdictColor = (verdict) => {
+    switch (verdict?.toLowerCase()) {
+      case 'accepted':
+      case 'ac':
+        return 'text-green-400 border-green-400 bg-green-400/10';
+      case 'wrong answer':
+      case 'wa':
+        return 'text-red-400 border-red-400 bg-red-400/10';
+      case 'time limit exceeded':
+      case 'tle':
+        return 'text-yellow-400 border-yellow-400 bg-yellow-400/10';
+      case 'runtime error':
+      case 're':
+        return 'text-orange-400 border-orange-400 bg-orange-400/10';
+      case 'compilation error':
+      case 'ce':
+        return 'text-purple-400 border-purple-400 bg-purple-400/10';
+      case 'memory limit exceeded':
+      case 'mle':
+        return 'text-blue-400 border-blue-400 bg-blue-400/10';
+      default:
+        return 'text-gray-400 border-gray-400 bg-gray-400/10';
+    }
+  };
+
+  const getVerdictIcon = (verdict) => {
+    switch (verdict?.toLowerCase()) {
+      case 'accepted':
+      case 'ac':
+        return '🎉';
+      case 'wrong answer':
+      case 'wa':
+        return '❌';
+      case 'time limit exceeded':
+      case 'tle':
+        return '⏰';
+      case 'runtime error':
+      case 're':
+        return '💥';
+      case 'compilation error':
+      case 'ce':
+        return '🔧';
+      case 'memory limit exceeded':
+      case 'mle':
+        return '🧠';
+      default:
+        return '❓';
     }
   };
 
@@ -149,8 +306,6 @@ const handleSubmitSolution = async () => {
           <option value="java">Java</option>
         </select>
 
-        
-
         <button
           onClick={handleRunCode}
           disabled={loading}
@@ -171,25 +326,150 @@ const handleSubmitSolution = async () => {
             </>
           )}
         </button>
+
+        {/* Enhanced Submit Button */}
         <button
           onClick={handleSubmitSolution}
-          disabled={loading}
-          className={`flex-1 inline-flex items-center justify-center ${
-            loading ? 'opacity-50 cursor-not-allowed' : 'bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600'
-          } text-white font-semibold rounded-lg px-5 py-2 shadow-md transition`}
+          disabled={submitting || loading}
+          className={`flex-1 group relative inline-flex items-center justify-center overflow-hidden rounded-lg px-6 py-2 font-semibold transition-all duration-300 ${
+            submitting || loading
+              ? 'cursor-not-allowed opacity-60' 
+              : 'hover:scale-105 hover:shadow-2xl active:scale-95'
+          }`}
         >
-          {loading ? 'Submitting...' : (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Submit Solution
-            </>
-          )}
+          {/* Animated Background */}
+          <div className={`absolute inset-0 bg-gradient-to-r transition-all duration-300 ${
+            submitting
+              ? 'from-blue-600 via-purple-600 to-blue-600 animate-pulse'
+              : 'from-emerald-500 via-blue-500 to-purple-500 group-hover:from-emerald-400 group-hover:via-blue-400 group-hover:to-purple-400'
+          }`}></div>
+          
+          {/* Shine Effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+          
+          {/* Content */}
+          <div className="relative flex items-center text-white">
+            {submitting ? (
+              <>
+                <div className="w-5 h-5 mr-2 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span className="animate-pulse">Judging...</span>
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 group-hover:rotate-12 transition-transform" fill="none"
+                  viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round"
+                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span>Submit Solution</span>
+              </>
+            )}
+          </div>
+          
+          {/* Glow Effect */}
+          <div className={`absolute inset-0 rounded-lg blur-sm transition-all duration-300 ${
+            submitting 
+              ? 'bg-blue-400/50' 
+              : 'bg-gradient-to-r from-emerald-400/50 via-blue-400/50 to-purple-400/50 group-hover:blur-md'
+          } -z-10`}></div>
         </button>
+
+       
+        
       </div>
+
+      
+
+      {/* Submit Result Display */}
+      {submitResult && (
+        <div className={`w-full max-w-4xl mb-4 rounded-xl p-6 border-2 transition-all duration-500 ${getVerdictColor(submitResult.verdict)}`}>
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">{getVerdictIcon(submitResult.verdict)}</span>
+              <div>
+                <h3 className="text-2xl font-bold">{submitResult.verdict}</h3>
+                {submitResult.details && (
+                  <p className="text-sm opacity-80 mt-1">{submitResult.details}</p>
+                )}
+              </div>
+            </div>
+            {submitResult.verdict.toLowerCase() === 'accepted' && (
+              <div className="text-4xl animate-bounce">✨</div>
+            )}
+          </div>
+
+          {/* Error Message */}
+          {submitResult.error && (
+            <div className="mb-4 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
+              <h4 className="font-semibold text-red-300 mb-2">Error Details:</h4>
+              <pre className="text-sm text-red-200 whitespace-pre-wrap">{submitResult.error}</pre>
+            </div>
+          )}
+
+          {/* Stats Grid */}
+          {!submitResult.error && submitResult.totalTestcases > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              {/* Test Cases */}
+              <div className="bg-black/20 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold">
+                  {submitResult.passedTestcases}/{submitResult.totalTestcases}
+                </div>
+                <div className="text-sm opacity-75">Test Cases</div>
+              </div>
+
+              {/* Execution Time */}
+              <div className="bg-black/20 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold">{submitResult.executionTime}</div>
+                <div className="text-sm opacity-75">Time</div>
+              </div>
+
+              {/* Memory */}
+              <div className="bg-black/20 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold">{submitResult.memoryUsed}</div>
+                <div className="text-sm opacity-75">Memory</div>
+              </div>
+
+              {/* Status */}
+              <div className="bg-black/20 rounded-lg p-4 text-center">
+                <div className="text-lg font-bold">
+                  {submitResult.verdict.toLowerCase() === 'accepted' ? '✅ Passed' : '❌ Failed'}
+                </div>
+                <div className="text-sm opacity-75">Status</div>
+              </div>
+            </div>
+          )}
+
+          {/* Failed Test Case Info */}
+          {submitResult.failedTestcase && submitResult.verdict.toLowerCase() !== 'accepted' && (
+            <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+              <h4 className="font-semibold text-red-300 mb-2">❌ Failed at Test Case #{submitResult.failedTestcase}</h4>
+              <p className="text-sm text-red-200">
+                Your solution passed {submitResult.passedTestcases} out of {submitResult.totalTestcases} test cases.
+                {submitResult.verdict.toLowerCase() === 'wrong answer' && 
+                  " Check your logic and edge cases."
+                }
+                {submitResult.verdict.toLowerCase() === 'time limit exceeded' && 
+                  " Your solution is too slow. Try optimizing your algorithm."
+                }
+                {submitResult.verdict.toLowerCase() === 'runtime error' && 
+                  " Your program crashed during execution. Check for array bounds, null pointers, etc."
+                }
+              </p>
+            </div>
+          )}
+
+          {/* Success Message */}
+          {submitResult.verdict.toLowerCase() === 'accepted' && (
+            <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4 text-center">
+              <h4 className="font-semibold text-green-300 text-lg mb-2">🎉 Congratulations!</h4>
+              <p className="text-green-200">
+                Your solution passed all test cases successfully!
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Code Editor */}
       <div className="w-full max-w-4xl bg-slate-900 rounded-xl shadow-lg overflow-hidden">

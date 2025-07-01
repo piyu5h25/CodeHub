@@ -68,7 +68,7 @@ const Problems = () => {
       <div className="container mx-auto px-4 py-6 max-w-7xl flex flex-col">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold bg-clip-text text-white">
             🚀 Problem Set
           </h1>
           <p className="text-gray-400 mt-2">
