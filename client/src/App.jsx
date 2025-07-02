@@ -12,6 +12,7 @@ import Privacy from './pages/Privacy'
 import ErrorBoundary from './components/ErrorBoundary'
 import ProtectedRoute from './components/ProtectedRoute'
 import AuthSelect from './pages/AuthSelect'
+import Leaderboard from './pages/Leaderboard'
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
               } />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
           </Routes>
         </div>
       </div>
