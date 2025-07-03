@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import submitRoutes from "./routes/submitRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";  
-
+import aiRoutes from "./routes/aiRoutes.js";
 import problemRoutes from "./routes/problemRoutes.js";
 
 
@@ -30,6 +30,7 @@ app.use("/", authRoutes);
 app.use("/problems", problemRoutes);
 app.use("/submit", submitRoutes);
 app.use("/leaderboard", leaderboardRoutes);
+app.use("/ai-review", aiRoutes);
 app.get("/", (req, res) => {
     res.send("Hello World");
 });

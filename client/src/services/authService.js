@@ -27,7 +27,7 @@ export const authService = {
   },
 
   async getUserCount() {
-    const response = await fetch('/api/users/count')
+    const response = await fetch(`${BACKEND_URL}/users/count`)
     return response.json()
   }
 }

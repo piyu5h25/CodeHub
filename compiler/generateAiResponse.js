@@ -13,7 +13,7 @@ const generateAiResponse = async (code, language) => {
 Please perform the following tasks:
 
 1. Evaluate the correctness and efficiency of the following code:
-${code}
+${code}. If user has not written any code, then just say that the user has not written any code.
 
 2. Only review the functional logic within the code block. Do NOT comment on external libraries, imports, boilerplate, or framework setup. Focus strictly on the algorithm, logic, and structure of the code itself.
 

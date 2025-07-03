@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
+import  AiReview from './AiReview';
 
 const CodeEditor = ({ problemId, problemName, sampleInput }) => {
   const [code, setCode] = useState('');
@@ -10,6 +11,8 @@ const CodeEditor = ({ problemId, problemName, sampleInput }) => {
   const [submitting, setSubmitting] = useState(false);
   const [isError, setIsError] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
+
+  // ... (all your existing helper functions remain the same)
 
   // 🔑 Generate storage keys for persistence
   const getStorageKey = (key) => {
@@ -67,13 +70,13 @@ int main() {
     }
   };
 
+  // ... (all your existing useEffect hooks remain the same)
+
   // 🔄 Initialize component with saved data
   useEffect(() => {
-    // Load saved language preference
     const savedLanguage = loadFromStorage(getStorageKey('language'), 'cpp');
     setLanguage(savedLanguage);
 
-    // Load saved code for this language and problem
     const savedCode = loadFromStorage(getStorageKey(`code_${savedLanguage}`));
     if (savedCode) {
       setCode(savedCode);
@@ -81,24 +84,20 @@ int main() {
       setCode(getDefaultCode(savedLanguage));
     }
 
-    // Load saved input
     const savedInput = loadFromStorage(getStorageKey('input'), sampleInput || '');
     setInput(savedInput);
   }, [problemId, sampleInput]);
 
   // 🔥 Update code when language changes and save to storage
   useEffect(() => {
-    // Save current language preference
     saveToStorage(getStorageKey('language'), language);
 
-    // Load saved code for new language or use default
     const savedCode = loadFromStorage(getStorageKey(`code_${language}`));
     if (savedCode) {
       setCode(savedCode);
     } else {
       const defaultCode = getDefaultCode(language);
       setCode(defaultCode);
-      // Save default code immediately
       saveToStorage(getStorageKey(`code_${language}`), defaultCode);
     }
   }, [language, problemId]);
@@ -122,7 +121,8 @@ int main() {
     }
   }, [sampleInput, problemId]);
 
-  
+  // ... (all your existing handler functions remain the same)
+
   const handleRunCode = async () => {
     const payload = {
       language,
@@ -133,7 +133,7 @@ int main() {
     try {
       setLoading(true);
       setIsError(false);
-      setSubmitResult(null); // Clear previous submit results
+      setSubmitResult(null);
 
       const response = await fetch(`${import.meta.env.VITE_COMPILER_URL}/run`, {
         method: 'POST',
@@ -180,7 +180,6 @@ int main() {
       const result = await response.json();
       console.log('Submit Response:', result);
 
-      // Process the result to extract relevant information
       const processedResult = {
         verdict: result.verdict || result.status || 'Unknown',
         totalTestcases: result.totalTestcases || result.total_testcases || result.testCases || 0,
@@ -192,14 +191,12 @@ int main() {
         details: result.details || result.message || null
       };
 
-      // Find failed testcase number
       if (result.failedTestcase || result.failed_testcase) {
         processedResult.failedTestcase = result.failedTestcase || result.failed_testcase;
       } else if (processedResult.passedTestcases < processedResult.totalTestcases && processedResult.totalTestcases > 0) {
         processedResult.failedTestcase = processedResult.passedTestcases + 1;
       }
 
-      // Handle testcase array if provided
       if (result.testcases && Array.isArray(result.testcases)) {
         const failedIndex = result.testcases.findIndex(tc => tc.status === 'failed' || tc.status === 'FAILED' || !tc.passed);
         if (failedIndex !== -1) {
@@ -221,6 +218,8 @@ int main() {
       setSubmitting(false);
     }
   };
+
+  // ... (all your existing utility functions remain the same)
 
   const getVerdictColor = (verdict) => {
     switch (verdict?.toLowerCase()) {
@@ -286,16 +285,10 @@ int main() {
 
   return (
     <div className="container mx-auto pt-2 px-4 flex flex-col items-center">
-      {/* Problem Name */}
-      {problemName && (
-        <h2 className="text-xl font-semibold mb-4 text-white text-center">
-          <span className="text-gray-300">Problem: </span>
-          {problemName}
-        </h2>
-      )}
+      
 
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-4xl mb-4">
+      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-4xl mb-2 pt-1">
         <select
           value={language}
           onChange={e => setLanguage(e.target.value)}
@@ -327,6 +320,8 @@ int main() {
             </>
           )}
         </button>
+        
+
 
         {/* Enhanced Submit Button */}
         <button
@@ -338,17 +333,14 @@ int main() {
               : 'hover:scale-105 hover:shadow-2xl active:scale-95'
           }`}
         >
-          {/* Animated Background */}
           <div className={`absolute inset-0 bg-gradient-to-r transition-all duration-300 ${
             submitting
               ? 'from-blue-600 via-purple-600 to-blue-600 animate-pulse'
               : 'from-emerald-500 via-blue-500 to-purple-500 group-hover:from-emerald-400 group-hover:via-blue-400 group-hover:to-purple-400'
           }`}></div>
           
-          {/* Shine Effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
           
-          {/* Content */}
           <div className="relative flex items-center text-white">
             {submitting ? (
               <>
@@ -367,20 +359,21 @@ int main() {
             )}
           </div>
           
-          {/* Glow Effect */}
           <div className={`absolute inset-0 rounded-lg blur-sm transition-all duration-300 ${
             submitting 
               ? 'bg-blue-400/50' 
               : 'bg-gradient-to-r from-emerald-400/50 via-blue-400/50 to-purple-400/50 group-hover:blur-md'
           } -z-10`}></div>
         </button>
-
-       
         
-      </div>
-
       
 
+
+      </div>
+          <AiReview code={code} language={language} />
+      
+      
+      
       {/* Submit Result Display */}
       {submitResult && (
         <div className={`w-full max-w-4xl mb-4 rounded-xl p-6 border-2 transition-all duration-500 ${getVerdictColor(submitResult.verdict)}`}>
@@ -411,7 +404,6 @@ int main() {
           {/* Stats Grid */}
           {!submitResult.error && submitResult.totalTestcases > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-              {/* Test Cases */}
               <div className="bg-black/20 rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold">
                   {submitResult.passedTestcases}/{submitResult.totalTestcases}
@@ -419,19 +411,16 @@ int main() {
                 <div className="text-sm opacity-75">Test Cases</div>
               </div>
 
-              {/* Execution Time */}
               <div className="bg-black/20 rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold">{submitResult.executionTime}</div>
                 <div className="text-sm opacity-75">Time</div>
               </div>
 
-              {/* Memory */}
               <div className="bg-black/20 rounded-lg p-4 text-center">
                 <div className="text-2xl font-bold">{submitResult.memoryUsed}</div>
                 <div className="text-sm opacity-75">Memory</div>
               </div>
 
-              {/* Status */}
               <div className="bg-black/20 rounded-lg p-4 text-center">
                 <div className="text-lg font-bold">
                   {submitResult.verdict.toLowerCase() === 'accepted' ? '✅ Passed' : '❌ Failed'}
@@ -467,6 +456,19 @@ int main() {
               <p className="text-green-200">
                 Your solution passed all test cases successfully!
               </p>
+            </div>
+          )}
+
+          {/* AI Review Suggestion for Failed Submissions */}
+          {submitResult.verdict.toLowerCase() !== 'accepted' && (
+            <div className="mt-4 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🤖</span>
+                <div>
+                  <h4 className="font-semibold text-blue-300">Need Help?</h4>
+                  <p className="text-sm text-blue-200">Use the AI Review button above to get detailed feedback on your code</p>
+                </div>
+              </div>
             </div>
           )}
         </div>
