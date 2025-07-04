@@ -13,7 +13,7 @@ const Compiler = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const location = useLocation();
-
+  
   if(!user){
     return <Navigate to="/login" state={{ from: location }} replace />
   }
@@ -61,7 +61,7 @@ int main() {
 
     try {
       setLoading(true);
-      const { data } = await axios.post(import.meta.env.VITE_BACKEND_URL, payload);
+      const { data } = await axios.post(`${import.meta.env.VITE_COMPILER_URL}/run`, payload);
       setOutput(data.output);
     } catch (error) {
       console.log(error.response);
