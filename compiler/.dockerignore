@@ -1,5 +1,5 @@
 codes
 outputs
 node_modules
-
+.env
 .gitignore
