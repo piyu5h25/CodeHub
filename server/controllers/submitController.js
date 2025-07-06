@@ -37,47 +37,93 @@ export const handleSubmission = async (req, res) => {
 
         let passedTests = 0;
         const totalTests = testCases.length;
+        let failedTestCase = null;
+        let executionTime = 0;
+        let memoryUsed = 0;
 
         for (let i = 0; i < totalTests; i++) {
             const testCase = testCases[i];
-
             const input = testCase.input || '';
             const expectedOutput = testCase.output || '';
 
-            const response = await axios.post(`${process.env.COMPILER_URL}/run`, {
-                code,
-                language,
-                input
-            });
+            try {
+                const response = await axios.post(`${process.env.COMPILER_URL}/run`, {
+                    code,
+                    language,
+                    input
+                });
 
-            const { output, error, success } = response.data;
+                const { output, error, success, time, memory } = response.data;
 
-            if (success === false) {
-                return res.json({ verdict: "Compilation Error", error });
-            }
+                // Track execution metrics
+                if (time) executionTime = Math.max(executionTime, parseInt(time) || 0);
+                if (memory) memoryUsed = Math.max(memoryUsed, parseInt(memory) || 0);
 
-            if (error && error.trim() !== '') {
-                return res.json({ verdict: "Runtime Error", error });
-            }
+                // Handle compilation errors
+                if (success === false) {
+                    return res.json({ 
+                        verdict: "Compilation Error", 
+                        error: error || "Code compilation failed",
+                        totalTestcases: totalTests,
+                        passedTestcases: 0,
+                        executionTime: `${executionTime}ms`,
+                        memoryUsed: `${memoryUsed}MB`
+                    });
+                }
 
-            const cleanOutput = normalize(output);
-            const cleanExpected = normalize(expectedOutput);
+                // Handle runtime errors
+                if (error && error.trim() !== '') {
+                    return res.json({ 
+                        verdict: "Runtime Error", 
+                        error: "Program crashed during execution",
+                        failedTestcase: i + 1,
+                        totalTestcases: totalTests,
+                        passedTestcases: passedTests,
+                        executionTime: `${executionTime}ms`,
+                        memoryUsed: `${memoryUsed}MB`
+                    });
+                }
 
-            if (cleanOutput !== cleanExpected) {
+                
+                const cleanOutput = normalize(output);
+                const cleanExpected = normalize(expectedOutput);
+
+                if (cleanOutput !== cleanExpected) {
+                    failedTestCase = i + 1;
+                    break;
+                }
+
+                passedTests++;
+
+            } catch (axiosError) {
+                console.error(`Error running test case ${i + 1}:`, axiosError.message);
                 return res.json({
-                    verdict: "Wrong Answer",
-                    testCase: i + 1,
-                    input,
-                    expectedOutput: cleanExpected,
-                    receivedOutput: cleanOutput,
-                    passedTests,
-                    totalTests
+                    verdict: "Runtime Error",
+                    error: "Code execution failed",
+                    failedTestcase: i + 1,
+                    totalTestcases: totalTests,
+                    passedTestcases: passedTests,
+                    executionTime: `${executionTime}ms`,
+                    memoryUsed: `${memoryUsed}MB`
                 });
             }
-
-            passedTests++;
         }
 
+        
+        if (failedTestCase) {
+            return res.json({
+                verdict: "Wrong Answer",
+                failedTestcase: failedTestCase,
+                totalTestcases: totalTests,
+                passedTestcases: passedTests,
+                executionTime: `${executionTime}ms`,
+                memoryUsed: `${memoryUsed}MB`,
+                details: `Failed at test case ${failedTestCase}. Check your logic and edge cases.`
+                
+            });
+        }
+
+        // All test cases passed - handle user scoring
         const userId = req.user._id;
         if (!userId) {
             return res.status(401).json({ message: "User not authenticated" });
@@ -103,19 +149,26 @@ export const handleSubmission = async (req, res) => {
             await updateScore(userId, problemId, problem.difficulty);
         }
 
-        // ✅ Fetch latest user data to send updated totalScore
+        
         const currentUser = await User.findById(userId);
 
         return res.json({
             verdict: "Accepted",
-            passedTests,
-            totalTests,
-            message: `All ${totalTests} test cases passed!`,
+            totalTestcases: totalTests,
+            passedTestcases: passedTests,
+            executionTime: `${executionTime}ms`,
+            memoryUsed: `${memoryUsed}MB`,
+            details: `All ${totalTests} test cases passed! Great job!`,
             totalScore: currentUser.totalScore,
+            
         });
 
     } catch (err) {
         console.error('Error in handleSubmission:', err);
-        return res.status(500).json({ message: "Server Error", error: err.message });
+        return res.status(500).json({ 
+            message: "Server Error", 
+            error: "Something went wrong while processing your submission",
+            verdict: "Submission Error"
+        });
     }
 };
