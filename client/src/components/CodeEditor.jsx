@@ -168,7 +168,7 @@ int main() {
 
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/submit`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
         credentials: 'include',
         body: JSON.stringify({
           code,
