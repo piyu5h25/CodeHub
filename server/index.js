@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 8080;
 
 connectDB();
 app.use(cors({
-    origin: [process.env.CLIENT_URL, "https://codehub-kimbe4mr9-piyu5h25s-projects.vercel.app"],
+    origin: process.env.CLIENT_URL,
     credentials: true,
 }));
 app.use(express.json());
