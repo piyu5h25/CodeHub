@@ -78,27 +78,81 @@ Build **Online\_Codehub** from the source and install dependencies:
    ```bash
    cd Project-Summer
    ```
+3. **Navigate to the client directory**:
 
-3. **Install the dependencies**:
+ ```bash
+ cd client
+ ```
+
+4. **Install the dependencies**:
 
    ```bash
    npm install
    ```
 
-4. **Usage**
-   Run the project with:
+5. **Navigate to the server directory**:
+
+ ```bash
+ cd server
+ ```
+
+6. **Install the dependencies**:
 
    ```bash
-   npm start
+   npm install
    ```
+7. **Navigate to the compiler directory**:
 
-5. **Testing**
-   Online\_Codehub uses the test framework. Run the test suite with:
+ ```bash
+ cd compiler
+ ```
+
+8. **Install the dependencies and build docker image**:
 
    ```bash
-   npm test
+   npm install
+   docker build command 
    ```
 
----
+9. **Usage**
+   Run the client with:
+
+   ```bash
+   npm run dev
+   ```
+
+10. **Usage**
+   Run the server with:
+
+   ```bash
+   nodemon index.js
+   ```
+11. ** env files for client**
+   ```bash
+   VITE_COMPILER_URL= 
+   VITE_BACKEND_URL=
+   ```
+12. ** env files for compiler**
+   ```bash
+   PORT = 
+    AI_API_KEY = 
+    MODEL_NAME = 
+
+   ```
+13. ** env files for compiler**
+   ```bash
+   PORT = 
+    PORT = 5000
+    MONGO_URL = 
+    JWT_SECRET = 
+    CLIENT_URL = 
+    COMPILER_URL = 
+    
+    
+    ADMIN_EMAIL = 
+    ADMIN_PASSWORD = 
+
+   ```
+
 
 > 🙋‍♂️ *Made with* ❤️ *by [Piyush Trivedi](https://github.com/piyu5h25)*
