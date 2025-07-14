@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Background from '../pages/Background';
+import Footer from '../components/Footer';
 
 const Leaderboard = () => {
     const [leaderboard, setLeaderboard] = useState([]);
@@ -92,6 +93,7 @@ const Leaderboard = () => {
                     )}
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { authService } from '../services/authService'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer' 
 
 const Homepage = () => {
   const { user } = useAuth()
@@ -192,6 +193,7 @@ const Homepage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   )
 }

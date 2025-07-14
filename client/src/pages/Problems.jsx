@@ -4,6 +4,7 @@ import { Link, useLocation, Navigate } from 'react-router-dom';
 import { problemService } from '../services/problemService';
 import Background from './Background';
 import { useAuth } from '../context/AuthContext';
+import Footer from '../components/Footer';
 
 
 
@@ -252,6 +253,7 @@ const Problems = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };
