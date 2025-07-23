@@ -14,7 +14,7 @@ const Footer = () => {
           
           <div className="flex space-x-8">
             <a
-              href="https://github.com/piyu5h25"
+              href="https://github.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-slate-400 hover:text-pink-400 transition-colors duration-200 text-sm font-medium"
@@ -22,7 +22,7 @@ const Footer = () => {
               GitHub
             </a>
             <a
-              href="https://www.linkedin.com/in/piyush-trivedi-84569b196/"
+              href="https://www.linkedin.com/in/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-slate-400 hover:text-pink-400 transition-colors duration-200 text-sm font-medium"
@@ -30,7 +30,7 @@ const Footer = () => {
               LinkedIn
             </a>
             <a
-              href="https://www.instagram.com/piyush_tvd/"
+              href="https://www.instagram.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-slate-400 hover:text-pink-400 transition-colors duration-200 text-sm font-medium"
@@ -38,11 +38,11 @@ const Footer = () => {
               Instagram
             </a>
             <a
-              href="mailto:piyush.tvd@gmail.com"
+              href="mailto:fakemail.com"
               onClick={(e) => {
-                if (!window.confirm("Open email client to send to piyush.tvd@gmail.com?")) {
+                if (!window.confirm("Open email client to send to fakemail.com")) {
                   e.preventDefault();
-                  navigator.clipboard.writeText("piyush.tvd@gmail.com");
+                  navigator.clipboard.writeText("fakemail.com");
                   alert("Email address copied to clipboard!");
                 }
               }}
